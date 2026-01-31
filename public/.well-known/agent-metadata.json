@@ -1,0 +1,50 @@
+{
+  "name": "NHL Stats Agent",
+  "description": "Live NHL hockey stats, standings, and player data via x402 micropayments",
+  "version": "1.0.0",
+  "owner": "0x0C3D21e8835990427405F6FeA649f1fb8CB30ED6",
+  "chain": "eip155:1",
+  "registeredAt": "2026-01-31T05:39:29.362Z",
+  "capabilities": [
+    {
+      "name": "overview",
+      "description": "Free NHL overview - top teams, scorers, games",
+      "price": 0
+    },
+    {
+      "name": "standings",
+      "description": "Full NHL standings by conference/division",
+      "price": 0.001
+    },
+    {
+      "name": "player",
+      "description": "Detailed player stats by ID",
+      "price": 0.002
+    },
+    {
+      "name": "leaders",
+      "description": "NHL stats leaders",
+      "price": 0.002
+    },
+    {
+      "name": "team",
+      "description": "Team details with roster",
+      "price": 0.003
+    },
+    {
+      "name": "report",
+      "description": "Comprehensive NHL report",
+      "price": 0.005
+    }
+  ],
+  "x402": {
+    "receiverAddress": "0x0C3D21e8835990427405F6FeA649f1fb8CB30ED6",
+    "network": "base",
+    "facilitator": "https://facilitator.daydreams.systems"
+  },
+  "erc8004": {
+    "registry": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+    "chainId": 1,
+    "transactionHash": "0x244b6c16d66165ec2156297b41d6c1b0d49ea601f58e392ddecbf315979efa92"
+  }
+}

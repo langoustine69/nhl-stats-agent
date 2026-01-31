@@ -2,6 +2,8 @@ import { createAgent } from '@lucid-agents/core';
 import { http } from '@lucid-agents/http';
 import { createAgentApp } from '@lucid-agents/hono';
 import { payments, paymentsFromEnv } from '@lucid-agents/payments';
+import { wallets, walletsFromEnv } from '@lucid-agents/wallet';
+import { identity, identityFromEnv } from '@lucid-agents/identity';
 import { z } from 'zod';
 
 const NHL_API = 'https://api-web.nhle.com/v1';
@@ -13,10 +15,42 @@ const agent = await createAgent({
   description: 'Live NHL hockey stats, standings, and player data. Real-time scores, league leaders, team rosters, and comprehensive reports from the official NHL API.',
 })
   .use(http())
+  .use(wallets({ config: walletsFromEnv() }))
   .use(payments({ config: paymentsFromEnv() }))
+  .use(identity({ config: identityFromEnv() }))
   .build();
 
 const { app, addEntrypoint } = await createAgentApp(agent);
+
+// Serve agent metadata for ERC-8004 identity verification
+app.get('/.well-known/agent-metadata.json', (c) => {
+  return c.json({
+    name: 'NHL Stats Agent',
+    description: 'Live NHL hockey stats, standings, and player data via x402 micropayments',
+    version: '1.0.0',
+    owner: '0x0C3D21e8835990427405F6FeA649f1fb8CB30ED6',
+    chain: 'eip155:1',
+    registeredAt: '2026-01-31T05:39:29.362Z',
+    capabilities: [
+      { name: 'overview', description: 'Free NHL overview', price: 0 },
+      { name: 'standings', description: 'NHL standings', price: 0.001 },
+      { name: 'player', description: 'Player stats', price: 0.002 },
+      { name: 'leaders', description: 'Stats leaders', price: 0.002 },
+      { name: 'team', description: 'Team details', price: 0.003 },
+      { name: 'report', description: 'Full report', price: 0.005 },
+    ],
+    x402: {
+      receiverAddress: '0x0C3D21e8835990427405F6FeA649f1fb8CB30ED6',
+      network: 'base',
+      facilitator: 'https://facilitator.daydreams.systems',
+    },
+    erc8004: {
+      registry: '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432',
+      chainId: 1,
+      transactionHash: '0x244b6c16d66165ec2156297b41d6c1b0d49ea601f58e392ddecbf315979efa92',
+    },
+  });
+});
 
 // === HELPER: Fetch NHL API ===
 async function fetchNHL(endpoint: string) {
